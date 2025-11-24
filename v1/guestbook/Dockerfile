@@ -1,3 +1,4 @@
+# Stage 1: Build
 FROM golang:1.18 AS builder
 
 WORKDIR /app
@@ -5,9 +6,11 @@ WORKDIR /app
 COPY main.go .
 
 RUN go mod init guestbook
+RUN go get -u github.com/gin-gonic/gin
 RUN go mod tidy
 RUN go build -o main main.go
 
+# Stage 2: Final image
 FROM ubuntu:18.04
 
 COPY --from=builder /app/main /app/guestbook
